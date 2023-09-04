@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class DrawPanel extends JPanel {
@@ -17,7 +18,7 @@ public class DrawPanel extends JPanel {
     private int cellsize;
 
     public DrawPanel() {
-        cellsize = 100;
+        cellsize = 120;
         try {
             loadFromFile("map1.txt");
         } catch (FileNotFoundException e) {
@@ -30,7 +31,7 @@ public class DrawPanel extends JPanel {
         super.paint(gr);
         Graphics2D g = (Graphics2D) gr;
 
-        g.setColor(new Color(38, 133, 47));
+        g.setColor(new Color(29, 182, 44));
         g.fillRect(0, 0, this.getWidth(), this.getHeight()); // background grass
 
         for (Road road : roads) {

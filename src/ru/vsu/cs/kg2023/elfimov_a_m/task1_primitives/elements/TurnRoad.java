@@ -23,13 +23,16 @@ public class TurnRoad extends Road {
         r = cellSize + 1;
         g.fillArc(x - r, y + cellSize - r, 2 * r, 2 * r, 0, 90);
         // Gravel
-        g.setColor(new Color(127, 127, 127));
+        g.setColor(gravelColor);
         r = cellSize * 5 / 6 + 1;
         g.fillArc(x - r, y + cellSize - r, 2 * r, 2 * r, 0, 90);
         // Smaller flags
         g.setColor(new Color(150, 10, 10));
-        r = cellSize / 6 + 1;
+        r = cellSize / 6;
         g.fillArc(x - r, y + cellSize - r, 2 * r, 2 * r, 0, 90);
+        // border
+        //g.setColor(new Color(50, 50, 50));
+        //g.drawRect(x, y, cellSize, cellSize);
         // Rotate back
         g.rotate(-direction, x + cellSize / 2, y + cellSize / 2);
         // ...

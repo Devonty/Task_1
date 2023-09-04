@@ -18,7 +18,7 @@ public class StraightRoad extends Road{
         // Rotate
         g.rotate(direction, x + cellSize / 2, y + cellSize / 2);
         // Gravel
-        g.setColor(new Color(127, 127, 127));
+        g.setColor(gravelColor);
         g.fillRect(x, y, cellSize, cellSize);
         // red flags
         g.setColor(Color.RED);
@@ -31,6 +31,9 @@ public class StraightRoad extends Road{
             g.fillRect(x + dx, y, cellSize / 6, cellSize / 6);
             g.fillRect(x + dx, y + 5 * cellSize / 6, cellSize / 6, cellSize / 6);
         }
+        // border
+        //g.setColor(new Color(50, 50, 50));
+        //g.drawRect(x, y, cellSize, cellSize);
         // Rotate back
         g.rotate(-direction, x + cellSize / 2, y + cellSize / 2);
         // ...
