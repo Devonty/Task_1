@@ -2,22 +2,14 @@ package ru.vsu.cs.kg2023.elfimov_a_m.task1_primitives.elements;
 
 import java.awt.*;
 
-public class StraightRoad {
-    public final double HORIZONTAL = 0., VERTICAL = Math.PI / 2.; // radians
-    private int x, y;
-    private int cellSize;
-    private double direction = HORIZONTAL;
+public class StraightRoad extends Road{
+    public static final double HORIZONTAL = 0., VERTICAL = Math.PI / 2.; // radians
 
     public StraightRoad(int x, int y) {
         this.x = x;
         this.y = y;
         this.cellSize = 60;
-    }
-
-    public StraightRoad(int x, int y, int cellSize) {
-        this.x = x;
-        this.y = y;
-        this.cellSize = cellSize;
+        this.direction = HORIZONTAL;
     }
 
     public void draw(Graphics2D g) {
@@ -45,7 +37,4 @@ public class StraightRoad {
         g.setColor(saveColor);
     }
 
-    public void setDirection(double direction) {
-        this.direction = direction;
-    }
 }
