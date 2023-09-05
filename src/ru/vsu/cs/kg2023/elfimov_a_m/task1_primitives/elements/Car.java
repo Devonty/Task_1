@@ -1,42 +1,73 @@
 package ru.vsu.cs.kg2023.elfimov_a_m.task1_primitives.elements;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLOutput;
 
 public class Car {
     protected int x, y;
+    protected int xTarget = 600, yTarget = 600;
     protected double xC, yC;
     protected int cellSize;
+    protected int carWidth;
+    protected int carHeight;
     protected double direction;
 
     protected Color mainColor = new Color(22, 22, 173);
     protected Color wheelColor = new Color(10, 10, 10);
     protected Color linesColor = new Color(255, 255, 255);
 
-    public Car(double xC, double yC) {
+    public Car(double xC, double yC, int cellSize) {
         this.xC = xC;
         this.yC = yC;
+
+        this.carWidth = cellSize / 2;
+        this.carHeight = cellSize / 3;
     }
 
+
+
     public void draw(Graphics2D g) {
+        moveToTarget();
         x = (int) Math.round(xC);
         y = (int) Math.round(yC);
-        int carWidth = cellSize / 2;
-        int carHeight = cellSize / 3;
         Color saveColor = g.getColor();
         // ...
         // Rotate
         g.rotate(direction, x + carWidth / 2, y + carHeight / 2);
         // Paint
         g.setColor(mainColor);
-        g.fillRect(x, y, cellSize / 2, cellSize / 3);
+        g.fillRect(x, y, carWidth, carHeight);
         // Rotate back
         g.rotate(-direction, x + carWidth / 2, y + carHeight / 2);
         // ...
         g.setColor(saveColor);
     }
 
+    public void moveToTarget() {
+        moveToPoint(xTarget, yTarget);
+    }
+
+    protected void moveToPoint(int x, int y) {
+        double xCenter = xC + carWidth / 2, yCenter = yC + carHeight / 2;
+        double dist = Math.sqrt((x - xCenter) * (x - xCenter) + (yCenter - y) * (yCenter - y));
+        double v = Math.sqrt(dist);
+        if (dist == 0) return;
+        if (dist < v) v = dist;
+
+        double deltaX = v * (x - xCenter) / dist;
+        double deltaY = v * (y - yCenter) / dist;
+
+        this.xC += deltaX;
+        this.yC += deltaY;
+    }
+
     public void setCellSize(int cellSize) {
         this.cellSize = cellSize;
+        this.carWidth = cellSize / 2;
+        this.carHeight = cellSize / 3;
     }
 
     public void setDirection(double direction) {
@@ -87,21 +118,13 @@ public class Car {
         return yC;
     }
 
-    protected void stepToPoint(int x, int y) {
-        double v = 2;
-        double dist = Math.sqrt((x - xC) * (x - xC) + (y - yC) * (y - yC));
-        if (dist == 0) return;
-        if (dist < v) v = dist;
-
-        double deltaX = v * (x - xC) / dist;
-        double deltaY = v * (y - yC) / dist;
-
-        this.xC += deltaX;
-        this.yC += deltaY;
+    public void setxTarget(int xTarget) {
+        this.xTarget = xTarget;
     }
 
-    public boolean moveToPoint(int x, int y){
-        stepToPoint(x, y);
-        return xC != x || yC != y;
+    public void setyTarget(int yTarget) {
+        this.yTarget = yTarget;
     }
+
+
 }
