@@ -1,29 +1,56 @@
 package ru.vsu.cs.kg2023.elfimov_a_m.task1_primitives;
 
+import ru.vsu.cs.kg2023.elfimov_a_m.task1_primitives.elements.Car;
 import ru.vsu.cs.kg2023.elfimov_a_m.task1_primitives.elements.Road;
 import ru.vsu.cs.kg2023.elfimov_a_m.task1_primitives.elements.StraightRoad;
 import ru.vsu.cs.kg2023.elfimov_a_m.task1_primitives.elements.TurnRoad;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 public class DrawPanel extends JPanel {
     private List<Road> roads = new ArrayList<>();
+    private Car car;
     private int cellsize;
+    private int x = 600, y = 600; // for test
 
+    final Timer timer = new Timer(10, new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            car.moveToPoint(x, y);
+            repaint();
+        }
+    });
     public DrawPanel() {
         cellsize = 120;
+
+
         try {
             loadFromFile("map1.txt");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+
+        car = new Car((double) (2 * cellsize), (double) (4 * cellsize / 3.));
+        car.setCellSize(cellsize);
+
+
+        timer.setInitialDelay(0);
+        timer.start();
+
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                x = e.getX();
+                y = e.getY();
+            }
+        });
+
     }
 
     @Override
@@ -37,6 +64,7 @@ public class DrawPanel extends JPanel {
         for (Road road : roads) {
             road.draw(g);
         }
+        car.draw(g);
     }
 
     public void loadFromFile(String mapName) throws FileNotFoundException {
