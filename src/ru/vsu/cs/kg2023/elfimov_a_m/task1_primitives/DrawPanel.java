@@ -11,14 +11,14 @@ public class DrawPanel extends JPanel {
     private Car car;
     private int cellSize;
 
-    final Timer timer = new Timer(10, new ActionListener() {
+    final Timer timer = new Timer(30, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             repaint();
         }
     });
 
     public DrawPanel() {
-        cellSize = 120;
+        cellSize = 180;
 
         trace = new Trace("map1.txt", cellSize);
         car = new Car((double) (2 * cellSize), (double) (4 * cellSize / 3.), cellSize);

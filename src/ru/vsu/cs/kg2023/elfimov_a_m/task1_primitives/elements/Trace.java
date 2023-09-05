@@ -11,6 +11,7 @@ public class Trace {
     protected int cellSize;
     private List<Road> roads = new ArrayList<>();
     private List<Point> tracePath = new ArrayList<>();
+    private int testFor = 0;
 
     public Trace(String mapName, int cellSize) {
         this.cellSize = cellSize;
@@ -22,11 +23,20 @@ public class Trace {
     }
 
     public void draw(Graphics2D g) {
+        testFor++;
         Color saveColor = g.getColor();
         // ...
         for (Road road : roads) {
             road.draw(g);
         }
+        // Points
+        g.setColor(Color.BLUE);
+        int r = 7;
+        for (int i = 0; i < tracePath.size(); i++) {
+            g.fillOval((int) (tracePath.get(i).getX() - r), (int) (tracePath.get(i).getY() - r), 2 * r, 2 * r);
+        }
+        g.setColor(Color.GREEN);
+        g.fillOval((int) (tracePath.get(testFor % tracePath.size()) .getX() - r), (int) (tracePath.get(testFor % tracePath.size()).getY() - r), 2 * r, 2 * r);
         // ...
         g.setColor(saveColor);
     }
@@ -40,14 +50,22 @@ public class Trace {
         */
         Scanner scanner = new Scanner(new File("src/ru/vsu/cs/kg2023/elfimov_a_m/task1_primitives/maps/" + mapName));
         Road road = null;
+
+        List<String> map = new ArrayList<>();
+
         int i = 0, x, y;
+        // Trace
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
+            map.add(line);
             for (int j = 0; j < line.length(); j++) {
                 if (line.charAt(j) == '.') continue;
                 x = j * cellSize;
                 y = i * cellSize;
                 if (line.charAt(j) == '=') {
+                    road = new StraightRoad(x, y);
+                }
+                if (line.charAt(j) == 's') {
                     road = new StraightRoad(x, y);
                 }
                 if (line.charAt(j) == '|') {
@@ -70,10 +88,71 @@ public class Trace {
                     road = new TurnRoad(x, y);
                     road.setDirection(TurnRoad.RIGHTUP);
                 }
+                assert road != null;
                 road.setCellSize(cellSize);
                 roads.add(road);
             }
             i++;
         }
+        // Path
+        for (i = 0; i < map.size(); i++) {
+            for (int j = 0; j < map.get(i).length(); j++) {
+                if (map.get(i).charAt(j) == 's') {
+                    findPath(map, i, j, 0, 0);
+                    i = map.size();
+                    break;
+                }
+            }
+        }
+        System.out.println(tracePath.size());
+        for (int j = 0; j < tracePath.size(); j++) {
+            System.out.println((j + 1) + ") " + tracePath.get(j));
+        }
+    }
+
+    private void findPath(List<String> map, int i, int j, int iFrom, int jFrom) {
+        char cFrom = map.get(iFrom).charAt(jFrom);
+        char cNow = map.get(i).charAt(j);
+        if (iFrom != 0 && jFrom != 0) {
+            if ("1234".contains(String.valueOf(cFrom))
+                    && "1234=|s".contains(String.valueOf(cNow))){
+                int x1 = j * cellSize + cellSize / 2;
+                int y1 = i * cellSize + cellSize / 2;
+                int x2 = jFrom * cellSize + cellSize / 2;
+                int y2 = iFrom * cellSize + cellSize / 2;
+
+                int x = (x1 + x2) / 2;
+                int y = (y1 + y2) / 2;
+                tracePath.add(new Point(x, y));
+            }
+            else if ("1234".contains(String.valueOf(cNow))
+                    && "=|s".contains(String.valueOf(cFrom))){
+                int x1 = j * cellSize + cellSize / 2;
+                int y1 = i * cellSize + cellSize / 2;
+                int x2 = jFrom * cellSize + cellSize / 2;
+                int y2 = iFrom * cellSize + cellSize / 2;
+
+                int x = (x1 + x2) / 2;
+                int y = (y1 + y2) / 2;
+                tracePath.add(new Point(x, y));
+            }
+        }
+        if (cNow == 's' && iFrom != 0 && jFrom != 0) {
+            return;
+        }
+
+        int I[] = {-1, 0, 1, 0};
+        int J[] = {0, 1, 0, -1};
+
+        for (int k = 0; k < I.length; k++) {
+            if (i + I[k] == iFrom && j + J[k] == jFrom) continue;
+            if (i + I[k] < 0 || j + J[k] < 0) continue;
+
+            if ("1234=|s".contains(String.valueOf(map.get(i + I[k]).charAt(j + J[k])))) {
+                findPath(map, i + I[k], j + J[k], i, j);
+                break;
+            }
+        }
+
     }
 }
