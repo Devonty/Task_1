@@ -22,6 +22,7 @@ public class DrawPanel extends JPanel {
 
         trace = new Trace("map1.txt", cellSize);
         car = new Car((double) (2 * cellSize), (double) (4 * cellSize / 3.), cellSize);
+        car.setTracePath(trace.getTracePath());
 
 
 
@@ -48,6 +49,8 @@ public class DrawPanel extends JPanel {
         trace.draw(g);
         car.draw(g);
     }
+
+
 
 
 }

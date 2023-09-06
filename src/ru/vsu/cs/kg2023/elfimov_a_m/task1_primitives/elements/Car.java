@@ -5,24 +5,29 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLOutput;
+import java.util.List;
 
 public class Car {
     protected int x, y;
     protected int xTarget = 600, yTarget = 600;
+
+    private List<Point> tracePath;
+    private int iTracePart;
     protected double xC, yC;
     protected int cellSize;
     protected int carWidth;
     protected int carHeight;
     protected double direction;
 
-    protected Color mainColor = new Color(22, 22, 173);
-    protected Color wheelColor = new Color(10, 10, 10);
-    protected Color linesColor = new Color(255, 255, 255);
+    protected static Color mainColor = new Color(22, 22, 173);
+    protected static Color wheelColor = new Color(10, 10, 10);
+    protected static Color linesColor = new Color(255, 255, 255);
 
     public Car(double xC, double yC, int cellSize) {
         this.xC = xC;
         this.yC = yC;
 
+        this.cellSize = cellSize;
         this.carWidth = cellSize / 2;
         this.carHeight = cellSize / 3;
     }
@@ -30,7 +35,12 @@ public class Car {
 
 
     public void draw(Graphics2D g) {
+        drawCar(g, true);
         moveToTarget();
+        drawCar(g, false);
+    }
+
+    private void drawCar (Graphics2D g, boolean darker){
         x = (int) Math.round(xC);
         y = (int) Math.round(yC);
         Color saveColor = g.getColor();
@@ -39,7 +49,8 @@ public class Car {
         g.rotate(direction, x + carWidth / 2, y + carHeight / 2);
         // Paint
         g.setColor(mainColor);
-        g.fillRect(x, y, carWidth, carHeight);
+        if(darker) g.setColor(mainColor.darker());
+        g.fillOval(x, y, carWidth, carHeight);
         // Rotate back
         g.rotate(-direction, x + carWidth / 2, y + carHeight / 2);
         // ...
@@ -47,21 +58,30 @@ public class Car {
     }
 
     public void moveToTarget() {
-        moveToPoint(xTarget, yTarget);
+        if (moveToPoint(xTarget, yTarget, cellSize/3)){
+            iTracePart = (iTracePart + 1) % tracePath.size();
+            this.xTarget = (int) tracePath.get(iTracePart).getX();
+            this.yTarget = (int) tracePath.get(iTracePart).getY();
+        }
     }
 
-    protected void moveToPoint(int x, int y) {
+    protected boolean moveToPoint(int x, int y, int radius) {
         double xCenter = xC + carWidth / 2, yCenter = yC + carHeight / 2;
         double dist = Math.sqrt((x - xCenter) * (x - xCenter) + (yCenter - y) * (yCenter - y));
-        double v = Math.sqrt(dist);
-        if (dist == 0) return;
-        if (dist < v) v = dist;
+        double v = 5 + 2 * Math.log(dist);
+
+        if (dist <= radius){
+            return true;
+        }
+        //if (dist < v) v = dist;
 
         double deltaX = v * (x - xCenter) / dist;
         double deltaY = v * (y - yCenter) / dist;
 
         this.xC += deltaX;
         this.yC += deltaY;
+
+        return Math.abs(xCenter - xTarget) <= radius && Math.abs(yCenter - yTarget) <= radius;
     }
 
     public void setCellSize(int cellSize) {
@@ -126,5 +146,10 @@ public class Car {
         this.yTarget = yTarget;
     }
 
-
+    public void setTracePath(List<Point> tracePath) {
+        this.tracePath = tracePath;
+        this.iTracePart = 0;
+        this.xTarget = (int) tracePath.get(0).getX();
+        this.yTarget = (int) tracePath.get(0).getY();
+    }
 }

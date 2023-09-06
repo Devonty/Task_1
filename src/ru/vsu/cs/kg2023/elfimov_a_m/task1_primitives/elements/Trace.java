@@ -36,7 +36,9 @@ public class Trace {
             g.fillOval((int) (tracePath.get(i).getX() - r), (int) (tracePath.get(i).getY() - r), 2 * r, 2 * r);
         }
         g.setColor(Color.GREEN);
-        g.fillOval((int) (tracePath.get(testFor % tracePath.size()) .getX() - r), (int) (tracePath.get(testFor % tracePath.size()).getY() - r), 2 * r, 2 * r);
+        g.fillOval((int) (tracePath.get((testFor / 2) % tracePath.size()) .getX() - r),
+                (int) (tracePath.get((testFor / 2) % tracePath.size()).getY() - r),
+                2 * r, 2 * r);
         // ...
         g.setColor(saveColor);
     }
@@ -136,6 +138,21 @@ public class Trace {
                 int y = (y1 + y2) / 2;
                 tracePath.add(new Point(x, y));
             }
+            if ("1234".contains(String.valueOf(cFrom))){
+                Point last = tracePath.get(tracePath.size() - 1);
+                Point preLast = tracePath.get(tracePath.size() - 2);
+                int x1 = (int) last.getX();
+                int y1 = (int) last.getY();
+                int x2 = (int) preLast.getX();
+                int y2 = (int) preLast.getY();
+                int x3 = jFrom * cellSize + cellSize / 2;
+                int y3 = iFrom * cellSize + cellSize / 2;
+
+                int x = (x1 + x2 + x3) / 3;
+                int y = (y1 + y2 + y3) / 3;
+                tracePath.set(tracePath.size() - 1, new Point(x, y));
+                tracePath.add(last);
+            }
         }
         if (cNow == 's' && iFrom != 0 && jFrom != 0) {
             return;
@@ -154,5 +171,9 @@ public class Trace {
             }
         }
 
+    }
+
+    public List<Point> getTracePath() {
+        return tracePath;
     }
 }
