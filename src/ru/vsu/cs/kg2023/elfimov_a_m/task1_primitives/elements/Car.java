@@ -58,7 +58,7 @@ public class Car {
     }
 
     public void moveToTarget() {
-        if (moveToPoint(xTarget, yTarget, cellSize/3)){
+        if (moveToPoint(xTarget, yTarget, cellSize/4)){
             iTracePart = (iTracePart + 1) % tracePath.size();
             this.xTarget = (int) tracePath.get(iTracePart).getX();
             this.yTarget = (int) tracePath.get(iTracePart).getY();
@@ -68,7 +68,8 @@ public class Car {
     protected boolean moveToPoint(int x, int y, int radius) {
         double xCenter = xC + carWidth / 2, yCenter = yC + carHeight / 2;
         double dist = Math.sqrt((x - xCenter) * (x - xCenter) + (yCenter - y) * (yCenter - y));
-        double v = 5 + 2 * Math.log(dist);
+        double v = 1.54  + 2 * Math.sqrt(1 + dist/cellSize);
+        System.out.println(v);
 
         if (dist <= radius){
             return true;

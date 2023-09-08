@@ -10,8 +10,9 @@ public class DrawPanel extends JPanel {
     private Trace trace;
     private Car car;
     private int cellSize;
+    private int flag = 0;
 
-    final Timer timer = new Timer(30, new ActionListener() {
+    final Timer timer = new Timer(0, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             repaint();
         }
@@ -35,18 +36,18 @@ public class DrawPanel extends JPanel {
         });
         timer.setInitialDelay(0);
         timer.start();
-
     }
 
     @Override
     public void paint(Graphics gr) {
-        super.paint(gr);
+        //super.paint(gr);
         Graphics2D g = (Graphics2D) gr;
 
         g.setColor(new Color(29, 182, 44));
         g.fillRect(0, 0, this.getWidth(), this.getHeight()); // background grass
-
         trace.draw(g);
+        flag++;
+
         car.draw(g);
     }
 
