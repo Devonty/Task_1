@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Trace {
+    public boolean DEBUG = false;
     protected int cellSize;
     private List<Road> roads = new ArrayList<>();
     private List<Point> tracePath = new ArrayList<>();
@@ -30,13 +31,17 @@ public class Trace {
             road.draw(g);
         }
         // Points
+        if (!DEBUG) {
+            g.setColor(saveColor);
+            return;
+        }
         g.setColor(Color.BLUE);
         int r = 7;
         for (int i = 0; i < tracePath.size(); i++) {
             g.fillOval((int) (tracePath.get(i).getX() - r), (int) (tracePath.get(i).getY() - r), 2 * r, 2 * r);
         }
         g.setColor(Color.GREEN);
-        g.fillOval((int) (tracePath.get((testFor / 2) % tracePath.size()) .getX() - r),
+        g.fillOval((int) (tracePath.get((testFor / 2) % tracePath.size()).getX() - r),
                 (int) (tracePath.get((testFor / 2) % tracePath.size()).getY() - r),
                 2 * r, 2 * r);
         // ...
@@ -68,7 +73,7 @@ public class Trace {
                     road = new StraightRoad(x, y);
                 }
                 if (line.charAt(j) == 's') {
-                    road = new StraightRoad(x, y);
+                    road = new StartRoad(x, y);
                 }
                 if (line.charAt(j) == '|') {
                     road = new StraightRoad(x, y);
@@ -117,7 +122,17 @@ public class Trace {
         char cNow = map.get(i).charAt(j);
         if (iFrom != 0 && jFrom != 0) {
             if ("1234".contains(String.valueOf(cFrom))
-                    && "1234=|s".contains(String.valueOf(cNow))){
+                    && "1234=|s".contains(String.valueOf(cNow))) {
+                int x1 = j * cellSize + cellSize / 2;
+                int y1 = i * cellSize + cellSize / 2;
+                int x2 = jFrom * cellSize + cellSize / 2;
+                int y2 = iFrom * cellSize + cellSize / 2;
+
+                int x = (x1 + x2) / 2;
+                int y = (y1 + y2) / 2;
+                tracePath.add(new Point(x, y));
+            } else if ("1234".contains(String.valueOf(cNow))
+                    && "=|s".contains(String.valueOf(cFrom))) {
                 int x1 = j * cellSize + cellSize / 2;
                 int y1 = i * cellSize + cellSize / 2;
                 int x2 = jFrom * cellSize + cellSize / 2;
@@ -127,18 +142,7 @@ public class Trace {
                 int y = (y1 + y2) / 2;
                 tracePath.add(new Point(x, y));
             }
-            else if ("1234".contains(String.valueOf(cNow))
-                    && "=|s".contains(String.valueOf(cFrom))){
-                int x1 = j * cellSize + cellSize / 2;
-                int y1 = i * cellSize + cellSize / 2;
-                int x2 = jFrom * cellSize + cellSize / 2;
-                int y2 = iFrom * cellSize + cellSize / 2;
-
-                int x = (x1 + x2) / 2;
-                int y = (y1 + y2) / 2;
-                tracePath.add(new Point(x, y));
-            }
-            if ("1234".contains(String.valueOf(cFrom))){
+            if ("1234".contains(String.valueOf(cFrom))) {
                 Point last = tracePath.get(tracePath.size() - 1);
                 Point preLast = tracePath.get(tracePath.size() - 2);
                 int x1 = (int) last.getX();

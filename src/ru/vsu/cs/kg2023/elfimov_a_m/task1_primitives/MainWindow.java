@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainWindow extends JFrame {
-    private final DrawPanel dp;
+    private final JPanel dp;
 
     public MainWindow() throws HeadlessException {
-        dp = new DrawPanel();
+        dp = new DrawPanelAngle();
         this.add(dp);
 
     }
