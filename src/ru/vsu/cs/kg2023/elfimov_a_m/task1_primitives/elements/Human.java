@@ -31,19 +31,18 @@ public class Human {
 
     private double angleRadians;
 
-    public Human(int x, int y, int size) {
+    public Human(int size) {
         Random rd = new Random();
         shirtColor = shirtColors[rd.nextInt(shirtColors.length)];
         headColor = headColors[rd.nextInt(headColors.length)];
-        this.x = x;
-        this.y = y;
+
         this.size = size;
         this.angleRadians = 0;
         height = 4 * size / 3;
         width = 7 * size / 3;
     }
 
-    public void draw(Graphics2D g) {
+    public void draw(Graphics2D g, int x, int y) {
         Color save = g.getColor();
         // ...
         // rotate

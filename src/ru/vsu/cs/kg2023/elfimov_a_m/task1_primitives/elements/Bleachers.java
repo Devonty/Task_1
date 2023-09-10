@@ -18,18 +18,11 @@ public class Bleachers {
         // people init
         int n = 4, m = 5;
         people = new Human[n][m];
-        int xStep = cellSize / 16;
-        int yStep = cellSize / 13;
-        int xHuman = x + xStep;
-        int yHuman = y + yStep;
         int humanSize = cellSize / 18;
         for (int i = 0; i < people.length; i++) {
-            xHuman = x + xStep;
             for (int j = 0; j < people[i].length; j++) {
-                people[i][j] = new Human(xHuman, yHuman, humanSize);
-                xHuman += xStep * 3;
+                people[i][j] = new Human(humanSize);
             }
-            yHuman += yStep * 3;
         }
     }
 
@@ -62,10 +55,19 @@ public class Bleachers {
             yDraw += cellSize / 13 + heightDraw;
         }
         // people
+
+        int xStep = cellSize / 16;
+        int yStep = cellSize / 13;
+        int xHuman = x + xStep;
+        int yHuman = y + yStep;
+        int humanSize = cellSize / 18;
         for (int i = 0; i < people.length; i++) {
+            xHuman = x + xStep;
             for (int j = 0; j < people[i].length; j++) {
-                people[i][j].draw(g);
+                people[i][j].draw(g, xHuman, yHuman);
+                xHuman += xStep * 3;
             }
+            yHuman += heightDraw + yStep;
         }
         // ...
         g.setColor(save);
