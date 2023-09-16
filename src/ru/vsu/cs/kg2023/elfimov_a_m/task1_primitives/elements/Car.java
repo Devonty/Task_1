@@ -166,15 +166,15 @@ public class Car {
         double delta = Math.abs(angleCurrentRadians - angleTargetRadians);
         double dif = Math.min(Math.abs(2 * Math.PI - delta), delta);
 
-        if (dif > Math.PI / 36) v /= 1.55;
+        if (dif > Math.PI / 36) v /= 1.35;
 
         if (dist <= radius) {
             return true;
         }
         //if (dist < v) v = dist;
 
-        double deltaX = v * (x - xCenter) / dist;
-        double deltaY = v * (y - yCenter) / dist;
+        double deltaX = v * Math.cos(angleCurrentRadians);
+        double deltaY = v * Math.sin(angleCurrentRadians);
 
         this.xC += deltaX;
         this.yC += deltaY;
