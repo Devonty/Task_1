@@ -56,9 +56,18 @@ public class DrawPanel extends JPanel {
 
         Graphics2D g = (Graphics2D) gr;
 
+
+
         g.setColor(new Color(29, 182, 44));
         g.fillRect(0, 0, this.getWidth(), this.getHeight()); // background grass
         trace.draw(g);
+
+
+        if(DEBUG){
+            g.setColor(Color.BLACK);
+            g.drawString("AngleCurrentRadians: " + car.getAngleCurrentRadians(), 800, 680);
+            g.drawString("AngleTargetRadians: " + car.getAngleTargetRadians(), 800, 710);
+        }
 
 
         car.draw(g);
