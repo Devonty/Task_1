@@ -32,8 +32,6 @@ public class Bleachers {
         // rotate
         g.rotate(direction, x + cellSize / 2, y + cellSize/ 2);
         // ...
-        g.setColor(Color.BLACK); // to delete
-        g.drawRect(x, y, cellSize, cellSize); // to delete
         int xDraw, yDraw, widthDraw, heightDraw;
         // Steel
         g.setColor(steelColor);
