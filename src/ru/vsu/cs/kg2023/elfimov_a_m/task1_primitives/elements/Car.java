@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Car {
     public boolean DEBUG = false;
-    private int x, y;
     private int xTarget = 600, yTarget = 600;
 
     private List<Point> tracePath;
@@ -39,19 +38,41 @@ public class Car {
         this.minSpeed = 3;
         this.angleTargetRadians = 0;
         this.angleCurrentRadians = 0;
-        this.angleSpeedRadians = Math.PI / 60;
+        this.angleSpeedRadians = Math.PI / 75;
     }
 
 
     public void draw(Graphics2D g) {
+        // drawFantom(g);
         calcAngle(g);
         moveToTarget(g);
         drawCar(g);
     }
+    private void drawFantom(Graphics2D g){
+        Color mainColorSave = mainColor;
+        Color linesColorSave = linesColor;
+        Color wheelColorSave = wheelColor;
 
+        double fantomDist = 1.;
+        xC -= fantomDist * Math.cos(angleCurrentRadians);
+        yC -= fantomDist * Math.sin(angleCurrentRadians);
+
+        mainColor = mainColor.darker().darker();
+        linesColor = linesColor.darker().darker();
+        wheelColor = wheelColor.darker().darker();
+
+        drawCar(g);
+
+        xC += fantomDist * Math.cos(angleCurrentRadians);
+        yC += fantomDist * Math.sin(angleCurrentRadians);
+
+        mainColor = mainColorSave;
+        linesColor = linesColorSave;
+        wheelColor = wheelColorSave;
+    }
     private void drawCar(Graphics2D g) {
-        x = (int) Math.round(xC);
-        y = (int) Math.round(yC);
+        int x = (int) Math.round(xC);
+        int y = (int) Math.round(yC);
         Color saveColor = g.getColor();
         // ...
         // Rotate
@@ -131,7 +152,7 @@ public class Car {
     }
 
     public void moveToTarget(Graphics2D g) {
-        if (moveToPoint(g, xTarget, yTarget, cellSize / 6)) {
+        if (moveToPoint(g, xTarget, yTarget, cellSize / 5)) {
             iTracePart = (iTracePart + 1) % tracePath.size();
             this.xTarget = (int) tracePath.get(iTracePart).getX();
             this.yTarget = (int) tracePath.get(iTracePart).getY();
@@ -145,7 +166,7 @@ public class Car {
         double delta = Math.abs(angleCurrentRadians - angleTargetRadians);
         double dif = Math.min(Math.abs(2 * Math.PI - delta), delta);
 
-        if (dif > Math.PI / 36) v /= 1.25;
+        if (dif > Math.PI / 36) v /= 1.55;
 
         if (dist <= radius) {
             return true;
@@ -178,8 +199,9 @@ public class Car {
             digit = 1;
         }
         double angleStep = digit * Math.min(localTarget, angleSpeedRadians);
-        angleCurrentRadians = (angleCurrentRadians + angleStep + 2 * Math.PI) % (2 * Math.PI);
-
+        if (Math.abs(angleStep) >= angleSpeedRadians) {
+            angleCurrentRadians = (angleCurrentRadians + angleStep + 2 * Math.PI) % (2 * Math.PI);
+        }
 
         // test angle
         if (!DEBUG) {
@@ -202,8 +224,9 @@ public class Car {
 
     public void setCellSize(int cellSize) {
         this.cellSize = cellSize;
-        this.carWidth = cellSize / 2;
-        this.carHeight = cellSize / 3;
+        this.size = 2 * cellSize / 7;
+        this.carWidth = 3 * size / 2;
+        this.carHeight = size;
     }
 
 

@@ -12,6 +12,7 @@ public class Trace {
     protected int cellSize;
     private List<Road> roads = new ArrayList<>();
     private List<Point> tracePath = new ArrayList<>();
+    private List<Bleachers> bleachers = new ArrayList<>();
     private int testFor = 0;
 
     public Trace(String mapName, int cellSize) {
@@ -69,32 +70,7 @@ public class Trace {
                 if (line.charAt(j) == '.') continue;
                 x = j * cellSize;
                 y = i * cellSize;
-                if (line.charAt(j) == '=') {
-                    road = new StraightRoad(x, y);
-                }
-                if (line.charAt(j) == 's') {
-                    road = new StartRoad(x, y);
-                }
-                if (line.charAt(j) == '|') {
-                    road = new StraightRoad(x, y);
-                    road.setDirection(StraightRoad.VERTICAL);
-                }
-                if (line.charAt(j) == '1') {
-                    road = new TurnRoad(x, y);
-                    road.setDirection(TurnRoad.RIGHTDOWN);
-                }
-                if (line.charAt(j) == '2') {
-                    road = new TurnRoad(x, y);
-                    road.setDirection(TurnRoad.LEFTDOWN);
-                }
-                if (line.charAt(j) == '3') {
-                    road = new TurnRoad(x, y);
-                    road.setDirection(TurnRoad.LEFTUP);
-                }
-                if (line.charAt(j) == '4') {
-                    road = new TurnRoad(x, y);
-                    road.setDirection(TurnRoad.RIGHTUP);
-                }
+                road = getRoadByChar(line.charAt(j), x, y);
                 assert road != null;
                 road.setCellSize(cellSize);
                 roads.add(road);
@@ -115,6 +91,37 @@ public class Trace {
         for (int j = 0; j < tracePath.size(); j++) {
             System.out.println((j + 1) + ") " + tracePath.get(j));
         }
+    }
+
+    private Road getRoadByChar(char ltr, int x, int y){
+        Road road = null;
+        if (ltr == '=') {
+            road = new StraightRoad(x, y);
+        }
+        if (ltr == 's') {
+            road = new StartRoad(x, y);
+        }
+        if (ltr == '|') {
+            road = new StraightRoad(x, y);
+            road.setDirection(StraightRoad.VERTICAL);
+        }
+        if (ltr == '1') {
+            road = new TurnRoad(x, y);
+            road.setDirection(TurnRoad.RIGHTDOWN);
+        }
+        if (ltr == '2') {
+            road = new TurnRoad(x, y);
+            road.setDirection(TurnRoad.LEFTDOWN);
+        }
+        if (ltr == '3') {
+            road = new TurnRoad(x, y);
+            road.setDirection(TurnRoad.LEFTUP);
+        }
+        if (ltr == '4') {
+            road = new TurnRoad(x, y);
+            road.setDirection(TurnRoad.RIGHTUP);
+        }
+        return road;
     }
 
     private void findPath(List<String> map, int i, int j, int iFrom, int jFrom) {
