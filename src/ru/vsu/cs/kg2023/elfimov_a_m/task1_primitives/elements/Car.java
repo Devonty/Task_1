@@ -35,7 +35,7 @@ public class Car {
         this.carWidth = 3 * size / 2;
         this.carHeight = size;
 
-        this.minSpeed = 3;
+        this.minSpeed = cellSize / 60;
         this.angleTargetRadians = 0;
         this.angleCurrentRadians = 0;
         this.angleSpinKoef = 0.08188790204; // 0.08188790204
