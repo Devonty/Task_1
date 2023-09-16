@@ -11,6 +11,7 @@ public class DrawPanel extends JPanel {
     public boolean DEBUG = false;
     private Trace trace;
     private Car car;
+    private Car car2;
     private int x0, y0;
     private int cellSize;
     private int ticks = 0;
@@ -31,6 +32,10 @@ public class DrawPanel extends JPanel {
         // car
         car = new Car(x0 + (2 * cellSize), y0 + (4 * cellSize / 3.), cellSize);
         car.setTracePath(trace.getTracePath());
+
+        car2 = new Car(x0 + (2 * cellSize) - cellSize, y0 + (4 * cellSize / 3.), cellSize);
+        car2.setMainColor(new Color(39, 203, 15));
+        car2.setTracePath(trace.getTracePath());
         // Debug mode
         switchDebug();
         // Mouse Target for Car
@@ -51,6 +56,7 @@ public class DrawPanel extends JPanel {
 
     public void switchDebug(){
         car.DEBUG = DEBUG;
+        car2.DEBUG = DEBUG;
         trace.DEBUG = DEBUG;
     }
 
@@ -62,7 +68,7 @@ public class DrawPanel extends JPanel {
 
 
 
-        g.setColor(new Color(29, 182, 44));
+        g.setColor(Color.DARK_GRAY);
         g.fillRect(0, 0, this.getWidth(), this.getHeight()); // background grass
         trace.draw(g);
 
@@ -75,6 +81,7 @@ public class DrawPanel extends JPanel {
 
 
         car.draw(g);
+        car2.draw(g);
     }
 
 
