@@ -38,14 +38,14 @@ public class Car {
         this.minSpeed = 3;
         this.angleTargetRadians = 0;
         this.angleCurrentRadians = 0;
-        this.angleSpinKoef = Math.PI / 75;
+        this.angleSpinKoef = 0.08188790204; // 0.08188790204
     }
 
 
     public void draw(Graphics2D g) {
         // drawFantom(g);
         calcAngle(g);
-        // moveToTarget(g);
+        moveToTarget(g);
         drawCar(g);
     }
     private void drawFantom(Graphics2D g){
@@ -194,12 +194,21 @@ public class Car {
         angleTargetRadians = (angleCalcRadians + PI2) % PI2;
 
         // spin to target angle
-        double DeltaAngleClockwise = Math.abs(angleTargetRadians - angleCurrentRadians);
-        double DeltaAngleCounterclockwise = PI2 - DeltaAngleClockwise;
-        double DeltaAngle = Math.min(DeltaAngleClockwise, DeltaAngleCounterclockwise) * angleSpinKoef;
+        double DeltaAngleClockwise = angleTargetRadians - angleCurrentRadians;
+        double DeltaAngleCounterclockwise = (angleTargetRadians + PI2) - angleCurrentRadians;
+        double DeltaAngle;
 
+        if(Math.abs(DeltaAngleClockwise) <= Math.abs(DeltaAngleCounterclockwise)){
+            DeltaAngle = DeltaAngleClockwise;
+        } else{
+            DeltaAngle = DeltaAngleCounterclockwise;
+        }
 
-        angleCurrentRadians = (angleCurrentRadians + DeltaAngle + PI2) % PI2;
+        if(DeltaAngle > Math.PI) {
+            DeltaAngle = (DeltaAngle - PI2 ) % PI2;
+        }
+
+        angleCurrentRadians = (angleCurrentRadians + DeltaAngle * angleSpinKoef + PI2) % PI2;
         // test angle
         if (!DEBUG) {
             g.setColor(save);
