@@ -21,9 +21,9 @@ public class Car {
 
     private double angleSpinKoef;
 
-    protected static Color mainColor = new Color(22, 22, 173);
-    protected static Color wheelColor = new Color(10, 10, 10);
-    protected static Color linesColor = new Color(255, 255, 255);
+    protected Color mainColor = new Color(22, 22, 173);
+    protected Color wheelColor = new Color(10, 10, 10);
+    protected Color linesColor = new Color(255, 255, 255);
 
     public Car(double xC, double yC, int cellSize) {
         this.xC = xC;
@@ -48,7 +48,8 @@ public class Car {
         moveToTarget(g);
         drawCar(g);
     }
-    private void drawFantom(Graphics2D g){
+
+    private void drawFantom(Graphics2D g) {
         Color mainColorSave = mainColor;
         Color linesColorSave = linesColor;
         Color wheelColorSave = wheelColor;
@@ -70,6 +71,7 @@ public class Car {
         linesColor = linesColorSave;
         wheelColor = wheelColorSave;
     }
+
     private void drawCar(Graphics2D g) {
         int x = (int) Math.round(xC);
         int y = (int) Math.round(yC);
@@ -118,16 +120,16 @@ public class Car {
         int wheelWidth = carWidth / 4;
         int wheelHeight = carHeight / 4;
         int[] wheelX = new int[]{
-                x + spoilerWidth + size/24,
-                x + spoilerWidth + size/24,
-                forwardSpoilerX - wheelWidth -size/24,
-                forwardSpoilerX - wheelWidth -size/24,
+                x + spoilerWidth + size / 24,
+                x + spoilerWidth + size / 24,
+                forwardSpoilerX - wheelWidth - size / 24,
+                forwardSpoilerX - wheelWidth - size / 24,
         };
         int[] wheelY = new int[]{
-                y + size/24,
+                y + size / 24,
                 y + bodyHeight + wheelHeight,
                 forwardSpoilerY,
-                forwardSpoilerY + wheelHeight + rectHeight + size/24,
+                forwardSpoilerY + wheelHeight + rectHeight + size / 24,
         };
 
         for (int i = 0; i < wheelX.length; i++) {
@@ -140,8 +142,8 @@ public class Car {
         int lineWidth = carWidth;
         int lineHeight = rectHeight / 7;
         int lineX = x;
-        int lineY1 = rectY + 3* rectHeight / 7;
-        int lineY2 = rectY + 5* rectHeight / 7;
+        int lineY1 = rectY + 3 * rectHeight / 7;
+        int lineY2 = rectY + 5 * rectHeight / 7;
         g.setColor(Color.WHITE);
         g.fillRect(lineX, lineY1, lineWidth, lineHeight);
         g.fillRect(lineX, lineY2, lineWidth, lineHeight);
@@ -184,7 +186,7 @@ public class Car {
 
     private void calcAngle(Graphics2D g) {
         Color save = g.getColor();
-        double PI2 = 2 *Math.PI;
+        double PI2 = 2 * Math.PI;
         double xCenter = xC + carWidth / 2., yCenter = yC + carHeight / 2.;
         double deltaX = xTarget - xCenter;
         double deltaY = yTarget - yCenter;
@@ -198,14 +200,14 @@ public class Car {
         double DeltaAngleCounterclockwise = (angleTargetRadians + PI2) - angleCurrentRadians;
         double DeltaAngle;
 
-        if(Math.abs(DeltaAngleClockwise) <= Math.abs(DeltaAngleCounterclockwise)){
+        if (Math.abs(DeltaAngleClockwise) <= Math.abs(DeltaAngleCounterclockwise)) {
             DeltaAngle = DeltaAngleClockwise;
-        } else{
+        } else {
             DeltaAngle = DeltaAngleCounterclockwise;
         }
 
-        if(DeltaAngle > Math.PI) {
-            DeltaAngle = (DeltaAngle - PI2 ) % PI2;
+        if (DeltaAngle > Math.PI) {
+            DeltaAngle = (DeltaAngle - PI2) % PI2;
         }
 
         angleCurrentRadians = (angleCurrentRadians + DeltaAngle * angleSpinKoef + PI2) % PI2;
@@ -257,5 +259,17 @@ public class Car {
 
     public double getAngleCurrentRadians() {
         return angleCurrentRadians;
+    }
+
+    public void setMainColor(Color mainColor) {
+        this.mainColor = mainColor;
+    }
+
+    public void setWheelColor(Color wheelColor) {
+        this.wheelColor = wheelColor;
+    }
+
+    public void setLinesColor(Color linesColor) {
+        this.linesColor = linesColor;
     }
 }
