@@ -19,7 +19,7 @@ public class Car {
     private double angleTargetRadians;
     private double angleCurrentRadians;
 
-    private double angleSpeedRadians;
+    private double angleSpinKoef;
 
     protected static Color mainColor = new Color(22, 22, 173);
     protected static Color wheelColor = new Color(10, 10, 10);
@@ -38,14 +38,14 @@ public class Car {
         this.minSpeed = 3;
         this.angleTargetRadians = 0;
         this.angleCurrentRadians = 0;
-        this.angleSpeedRadians = Math.PI / 75;
+        this.angleSpinKoef = Math.PI / 75;
     }
 
 
     public void draw(Graphics2D g) {
         // drawFantom(g);
         calcAngle(g);
-        moveToTarget(g);
+        // moveToTarget(g);
         drawCar(g);
     }
     private void drawFantom(Graphics2D g){
@@ -184,25 +184,22 @@ public class Car {
 
     private void calcAngle(Graphics2D g) {
         Color save = g.getColor();
+        double PI2 = 2 *Math.PI;
         double xCenter = xC + carWidth / 2., yCenter = yC + carHeight / 2.;
         double deltaX = xTarget - xCenter;
         double deltaY = yTarget - yCenter;
         double cosAngleCalc = deltaY / Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         double angleCalcRadians = Math.acos(cosAngleCalc) + Math.PI / 2;
         if (deltaX > 0) angleCalcRadians = Math.PI - angleCalcRadians;
-        angleTargetRadians = angleCalcRadians;
+        angleTargetRadians = (angleCalcRadians + PI2) % PI2;
 
         // spin to target angle
-        double localTarget = (angleCurrentRadians - angleTargetRadians + 4 * Math.PI) % (2 * Math.PI);
-        int digit = -1;
-        if (localTarget >= Math.PI) {
-            digit = 1;
-        }
-        double angleStep = digit * Math.min(localTarget, angleSpeedRadians);
-        if (Math.abs(angleStep) >= angleSpeedRadians) {
-            angleCurrentRadians = (angleCurrentRadians + angleStep + 2 * Math.PI) % (2 * Math.PI);
-        }
+        double DeltaAngleClockwise = Math.abs(angleTargetRadians - angleCurrentRadians);
+        double DeltaAngleCounterclockwise = PI2 - DeltaAngleClockwise;
+        double DeltaAngle = Math.min(DeltaAngleClockwise, DeltaAngleCounterclockwise) * angleSpinKoef;
 
+
+        angleCurrentRadians = (angleCurrentRadians + DeltaAngle + PI2) % PI2;
         // test angle
         if (!DEBUG) {
             g.setColor(save);
@@ -243,5 +240,13 @@ public class Car {
         this.iTracePart = 0;
         this.xTarget = (int) tracePath.get(0).getX();
         this.yTarget = (int) tracePath.get(0).getY();
+    }
+
+    public double getAngleTargetRadians() {
+        return angleTargetRadians;
+    }
+
+    public double getAngleCurrentRadians() {
+        return angleCurrentRadians;
     }
 }
