@@ -13,6 +13,7 @@ public class Trace {
     private List<Road> roads = new ArrayList<>();
     private List<Point> tracePath = new ArrayList<>();
     private List<Bleachers> bleachers = new ArrayList<>();
+    private int i0, j0, i1, j1;
     private int x0, y0;
     private int tick = 0;
 
@@ -29,20 +30,43 @@ public class Trace {
 
     public void draw(Graphics2D g) {
         tick++;
+        // save color
         Color saveColor = g.getColor();
-        // ...
-        for (Road road : roads) {
+        // BackGround
+        drawTraceBackground(g);
+        // Roads
+        for (Road road : this.roads) {
             road.draw(g);
         }
-        // ...
-        for (Bleachers bleacher : bleachers) {
-            bleacher.draw(g);
+        // Bleachers
+        for (Bleachers bleachers : this.bleachers) {
+            bleachers.draw(g);
         }
         // DEBUG
-        if (!DEBUG) {
-            g.setColor(saveColor);
-            return;
-        }
+        drawDEBUG(g);
+        // ...
+        g.setColor(saveColor);
+    }
+
+    private void drawTraceBackground(Graphics2D g){
+        Color save = g.getColor();
+        // ...
+        // around
+        g.setColor(Color.BLACK);
+        g.fillRoundRect(x0, y0, (j1 - j0 + 1) * cellSize, (i1 - i0 + 1) * cellSize, 150, 150);
+        // grass
+        g.setColor(new Color(29, 182, 44));
+        g.fillRoundRect(x0 + cellSize, y0 + cellSize, (j1 - j0 - 1) * cellSize, (i1 - i0 - 1) * cellSize, 150, 150);
+        // ...
+        g.setColor(save);
+    }
+
+    private void drawDEBUG(Graphics2D g) {
+        if (!DEBUG) return;
+        // save color
+        Color save = g.getColor();
+        // ...
+
         g.setColor(Color.BLUE);
         int r = 7;
         for (int i = 0; i < tracePath.size(); i++) {
@@ -53,7 +77,7 @@ public class Trace {
                 (int) (tracePath.get((tick / 2) % tracePath.size()).getY() - r),
                 2 * r, 2 * r);
         // ...
-        g.setColor(saveColor);
+        g.setColor(save);
     }
 
     public void loadFromFile(String mapName) throws FileNotFoundException {
@@ -69,7 +93,11 @@ public class Trace {
         List<String> map = new ArrayList<>();
 
         int i = 0, x, y;
-        int iS = -1, jS = -1, i0 = Integer.MAX_VALUE, j0 = Integer.MAX_VALUE, i1 = 0, j1 = 0;
+        int iS = -1, jS = -1;
+        i0 = Integer.MAX_VALUE;
+        j0 = Integer.MAX_VALUE;
+        i1 = 0;
+        j1 = 0;
         // Trace
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -123,6 +151,7 @@ public class Trace {
             bleachers.setDirection(Math.PI);
             this.bleachers.add(bleachers);
         }
+        // left/right
         for (i = i0 + 1; i < i1; i++) {
             bleachers = new Bleachers(x0 + j0 * cellSize, y0 + i * cellSize, cellSize);
             bleachers.setDirection(-Math.PI / 2);
