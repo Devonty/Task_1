@@ -11,6 +11,7 @@ public class DrawPanel extends JPanel {
     public boolean DEBUG = false;
     private Trace trace;
     private Car car;
+    private int x0, y0;
     private int cellSize;
     private int ticks = 0;
 
@@ -21,10 +22,14 @@ public class DrawPanel extends JPanel {
     });
 
     public DrawPanel() {
-        cellSize = 180;
-
-        trace = new Trace("map1.txt", cellSize);
-        car = new Car((double) (2 * cellSize), (double) (4 * cellSize / 3.), cellSize);
+        cellSize = 150;
+        // coordinate shift
+        x0 = 200;
+        y0 = 100;
+        // trace
+        trace = new Trace("map1.txt", cellSize, x0, y0);
+        // car
+        car = new Car(x0 + (2 * cellSize), y0 + (4 * cellSize / 3.), cellSize);
         car.setTracePath(trace.getTracePath());
         // Debug mode
         switchDebug();
@@ -38,7 +43,6 @@ public class DrawPanel extends JPanel {
                 switchDebug();
             }
         });
-
 
         // Timer
         timer.setInitialDelay(0);
