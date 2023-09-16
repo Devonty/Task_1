@@ -5,6 +5,7 @@ import java.awt.*;
 public class Bleachers {
     private int x, y;
     private int cellSize;
+    private double direction = 0;
     public static Color steelColor = new Color(127, 127, 127);
     public static Color sitsColor = new Color(195, 195, 195);
 
@@ -28,6 +29,8 @@ public class Bleachers {
 
     public void draw(Graphics2D g) {
         Color save = g.getColor();
+        // rotate
+        g.rotate(direction, x + cellSize / 2, y + cellSize/ 2);
         // ...
         g.setColor(Color.BLACK); // to delete
         g.drawRect(x, y, cellSize, cellSize); // to delete
@@ -69,7 +72,14 @@ public class Bleachers {
             }
             yHuman += heightDraw + yStep;
         }
+
+        // rotate back
+        g.rotate(-direction, x + cellSize / 2, y + cellSize/ 2);
         // ...
         g.setColor(save);
+    }
+
+    public void setDirection(double direction) {
+        this.direction = direction;
     }
 }
