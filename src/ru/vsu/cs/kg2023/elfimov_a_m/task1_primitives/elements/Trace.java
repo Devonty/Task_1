@@ -13,9 +13,12 @@ public class Trace {
     private List<Road> roads = new ArrayList<>();
     private List<Point> tracePath = new ArrayList<>();
     private List<Bleachers> bleachers = new ArrayList<>();
-    private int testFor = 0;
+    private int x0, y0;
+    private int tick = 0;
 
-    public Trace(String mapName, int cellSize) {
+    public Trace(String mapName, int cellSize, int x0, int y0) {
+        this.x0 = x0;
+        this.y0 = y0;
         this.cellSize = cellSize;
         try {
             loadFromFile(mapName);
@@ -25,13 +28,17 @@ public class Trace {
     }
 
     public void draw(Graphics2D g) {
-        testFor++;
+        tick++;
         Color saveColor = g.getColor();
         // ...
         for (Road road : roads) {
             road.draw(g);
         }
-        // Points
+        // ...
+        for (Bleachers bleacher : bleachers) {
+            bleacher.draw(g);
+        }
+        // DEBUG
         if (!DEBUG) {
             g.setColor(saveColor);
             return;
@@ -42,8 +49,8 @@ public class Trace {
             g.fillOval((int) (tracePath.get(i).getX() - r), (int) (tracePath.get(i).getY() - r), 2 * r, 2 * r);
         }
         g.setColor(Color.GREEN);
-        g.fillOval((int) (tracePath.get((testFor / 2) % tracePath.size()).getX() - r),
-                (int) (tracePath.get((testFor / 2) % tracePath.size()).getY() - r),
+        g.fillOval((int) (tracePath.get((tick / 2) % tracePath.size()).getX() - r),
+                (int) (tracePath.get((tick / 2) % tracePath.size()).getY() - r),
                 2 * r, 2 * r);
         // ...
         g.setColor(saveColor);
@@ -57,43 +64,79 @@ public class Trace {
         "." nothing
         */
         Scanner scanner = new Scanner(new File("src/ru/vsu/cs/kg2023/elfimov_a_m/task1_primitives/maps/" + mapName));
-        Road road = null;
+        Road road;
 
         List<String> map = new ArrayList<>();
 
         int i = 0, x, y;
+        int iS = -1, jS = -1, i0 = Integer.MAX_VALUE, j0 = Integer.MAX_VALUE, i1 = 0, j1 = 0;
         // Trace
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             map.add(line);
             for (int j = 0; j < line.length(); j++) {
                 if (line.charAt(j) == '.') continue;
+                // start save
+                if (line.charAt(j) == 's') {
+                    iS = i;
+                    jS = j;
+                }
+                // borders save
+                i0 = Math.min(i0, i);
+                j0 = Math.min(j0, j);
+                i1 = Math.max(i1, i);
+                j1 = Math.max(j1, j);
+
+
                 x = j * cellSize;
                 y = i * cellSize;
-                road = getRoadByChar(line.charAt(j), x, y);
+                road = getRoadByChar(line.charAt(j), x0 + x, y0 + y);
                 assert road != null;
                 road.setCellSize(cellSize);
                 roads.add(road);
             }
             i++;
         }
+
         // Path
-        for (i = 0; i < map.size(); i++) {
-            for (int j = 0; j < map.get(i).length(); j++) {
-                if (map.get(i).charAt(j) == 's') {
-                    findPath(map, i, j, 0, 0);
-                    i = map.size();
-                    break;
-                }
-            }
-        }
+        findPath(map, iS, jS, 0, 0);
+        i = map.size();
+
         System.out.println(tracePath.size());
-        for (int j = 0; j < tracePath.size(); j++) {
-            System.out.println((j + 1) + ") " + tracePath.get(j));
+        for (i = 0; i < tracePath.size(); i++) {
+            tracePath.set(i, new Point(tracePath.get(i).x + x0, tracePath.get(i).y + y0));
+            System.out.println((i + 1) + ") " + tracePath.get(i));
         }
+
+        // Bleachers
+        i0--;
+        j0--;
+        i1++;
+        j1++;
+        Bleachers bleachers;
+        // top/button
+        for (int j = j0 + 1; j < j1; j++) {
+            bleachers = new Bleachers(x0 + j * cellSize, y0 + i0 * cellSize, cellSize);
+            this.bleachers.add(bleachers);
+
+            bleachers = new Bleachers(x0 + j * cellSize, y0 + i1 * cellSize, cellSize);
+            bleachers.setDirection(Math.PI);
+            this.bleachers.add(bleachers);
+        }
+        for (i = i0 + 1; i < i1; i++) {
+            bleachers = new Bleachers(x0 + j0 * cellSize, y0 + i * cellSize, cellSize);
+            bleachers.setDirection(-Math.PI / 2);
+            this.bleachers.add(bleachers);
+
+            bleachers = new Bleachers(x0 + j1 * cellSize, y0 + i * cellSize, cellSize);
+            bleachers.setDirection(Math.PI / 2);
+            this.bleachers.add(bleachers);
+        }
+
+
     }
 
-    private Road getRoadByChar(char ltr, int x, int y){
+    private Road getRoadByChar(char ltr, int x, int y) {
         Road road = null;
         if (ltr == '=') {
             road = new StraightRoad(x, y);
